@@ -1,0 +1,18 @@
+# Local specification; never commit.
+Alteva Technical Assessment Implementation Plan.md
+**/bin/
+**/obj/
+**/TestResults/
+**/node_modules/
+**/.next/
+**/*.tsbuildinfo
+**/next-env.d.ts
+.env
+.env.*
+!.env.example
+.DS_Store
+
+**/__pycache__/
+
+# Local/CI diagnostic output.
+artifacts/

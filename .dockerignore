@@ -1,0 +1,13 @@
+.git
+**/bin
+**/obj
+**/TestResults
+**/node_modules
+**/.next
+.env*
+Alteva Technical Assessment Implementation Plan.md
+
+**/__pycache__/
+
+# Local/CI diagnostic output.
+artifacts/

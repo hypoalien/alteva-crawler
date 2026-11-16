@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="../Crawler.Shared/Crawler.Shared.csproj" />
+    <PackageReference Include="AngleSharp" Version="1.10.4" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.10.0" />
+  </ItemGroup>
+</Project>
