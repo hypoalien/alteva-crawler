@@ -1,0 +1,17 @@
+services:
+  fixtures:
+    image: python:3.12-alpine
+    working_dir: /fixtures
+    command: ["python", "server.py"]
+    volumes:
+      - ./fixtures:/fixtures:ro
+    ports:
+      - "127.0.0.1:5090:8090"
+
+  worker:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Testing
+      Crawl__AllowedPrivateHosts__0: fixtures
+    depends_on:
+      fixtures:
+        condition: service_started
