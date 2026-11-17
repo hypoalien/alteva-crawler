@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { QueryProvider } from "@/components/query-provider";
+import { Button } from "@/components/ui/button";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,13 +24,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <Link href="/" className="font-semibold">
                 Alteva Crawler
               </Link>
-              <nav aria-label="Primary navigation">
+              <nav
+                aria-label="Primary navigation"
+                className="flex items-center gap-4"
+              >
                 <Link
                   href="/history"
                   className="text-sm underline-offset-4 hover:underline"
                 >
                   History
                 </Link>
+                <Button asChild>
+                  <Link href="/">New crawl</Link>
+                </Button>
               </nav>
             </header>
             <main className="py-10 sm:py-14">{children}</main>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,21 @@ import { Progress } from "@/components/ui/progress";
 import { ErrorNotice } from "@/components/error-notice";
 import { PageTree } from "@/components/page-tree";
 import { StatusBadge } from "@/components/status-badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cancelJob, formatTime, getJob, getJobTree, isActive } from "@/lib/api";
+
+// Load the interactive graph only when its tab is opened; the default tree stays lightweight.
+const PageGraph = dynamic(
+  () => import("@/components/page-graph").then((module) => module.PageGraph),
+  {
+    ssr: false,
+    loading: () => (
+      <p role="status" className="py-8 text-sm text-muted-foreground">
+        Loading graph…
+      </p>
+    ),
+  },
+);
 
 /**
  * Loads one job, polls while active, and fetches its tree once terminal. Owns cancellation
@@ -175,7 +190,7 @@ export function JobDetails({ jobId }: { jobId: string }) {
             </CardTitle>
             <p className="text-sm text-muted-foreground">
               Ratio = distinct internal links ÷ all distinct HTTP(S) links.
-              Expand pages to explore their children.
+              Explore pages as a tree or an interactive discovery graph.
             </p>
           </CardHeader>
           <CardContent>
@@ -187,7 +202,28 @@ export function JobDetails({ jobId }: { jobId: string }) {
                 onRetry={() => void tree.refetch()}
               />
             ) : (
-              <PageTree nodes={tree.data ?? []} />
+              <Tabs defaultValue="tree" className="gap-4">
+                <TabsList aria-label="Discovered pages view">
+                  <TabsTrigger
+                    value="tree"
+                    className="px-4 data-[state=active]:bg-background data-[state=active]:text-foreground"
+                  >
+                    Tree
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="graph"
+                    className="px-4 data-[state=active]:bg-background data-[state=active]:text-foreground"
+                  >
+                    Graph
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="tree">
+                  <PageTree nodes={tree.data ?? []} />
+                </TabsContent>
+                <TabsContent value="graph">
+                  <PageGraph pages={tree.data ?? []} />
+                </TabsContent>
+              </Tabs>
             )}
           </CardContent>
         </Card>

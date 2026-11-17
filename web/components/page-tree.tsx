@@ -7,7 +7,7 @@ import type { PageTreeNode } from "@/lib/api";
  */
 function PageRow({ node }: { node: PageTreeNode }) {
   return (
-    <span className="block min-w-0 space-y-2 py-2">
+    <span className="block min-w-0 flex-1 space-y-2 py-2">
       <span className="text-sm font-medium break-all">{node.url}</span>
       {node.finalUrl && node.finalUrl !== node.url ? (
         <span className="block text-xs break-all text-muted-foreground">
@@ -39,8 +39,22 @@ function TreeNode({ node, level }: { node: PageTreeNode; level: number }) {
   return (
     <li className="min-w-0">
       {node.children.length > 0 && level < 5 ? (
-        <details open={level === 0}>
-          <summary className="cursor-pointer rounded-md px-2 focus-visible:outline-2 focus-visible:outline-ring">
+        <details open={level === 0} className="[&[open]>summary>svg]:rotate-90">
+          <summary className="flex cursor-pointer list-none items-start gap-2 rounded-md px-2 hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-ring [&::-webkit-details-marker]:hidden">
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+              className="mt-3 size-4 shrink-0 text-muted-foreground transition-transform motion-reduce:transition-none"
+            >
+              <path
+                d="m6 4 4 4-4 4"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
             <PageRow node={node} />
           </summary>
           <ul className="ml-3 space-y-2 border-l pl-3 sm:ml-5 sm:pl-5">
@@ -50,7 +64,7 @@ function TreeNode({ node, level }: { node: PageTreeNode; level: number }) {
           </ul>
         </details>
       ) : (
-        <div className="px-2">
+        <div className="pl-8 pr-2">
           <PageRow node={node} />
         </div>
       )}
