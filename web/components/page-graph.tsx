@@ -17,17 +17,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { StatusBadge } from "@/components/status-badge";
-import type { PageStatus, PageTreeNode } from "@/lib/api";
+import { StatusBadge, statusStyles } from "@/components/status-badge";
+import type { PageTreeNode } from "@/lib/api";
 import { buildPageGraph, type CrawlGraphNode } from "@/lib/page-graph";
 import { cn } from "@/lib/utils";
-
-/** Uses the same neutral/completed and red/failed vocabulary as the page status badges. */
-function nodeColor(status: PageStatus) {
-  if (status === "Failed") return "border-destructive bg-destructive";
-  if (status === "Completed") return "border-foreground bg-foreground";
-  return "border-muted-foreground bg-background";
-}
 
 /** A keyboard-focusable page with a full-URL tooltip; selecting it pins details below the graph. */
 const PageNode = memo(function PageNode({
@@ -59,7 +52,7 @@ const PageNode = memo(function PageNode({
                 "block size-5 rounded-full border-2 transition-shadow motion-reduce:transition-none",
                 page.depth === 0 &&
                   "size-8 border-4 border-background ring-2 ring-foreground",
-                nodeColor(page.status),
+                statusStyles[page.status].dot,
                 selected && "outline-2 outline-offset-4 outline-ring",
               )}
             />
@@ -109,6 +102,7 @@ export function PageGraph({ pages }: { pages: PageTreeNode[] }) {
       })),
     [graph.nodes, current?.url],
   );
+  const statuses = [...new Set(graph.nodes.map((node) => node.data.page.status))];
 
   if (!pages.length)
     return (
@@ -122,16 +116,16 @@ export function PageGraph({ pages }: { pages: PageTreeNode[] }) {
           {nodes.length} pages · {graph.edges.length} discovery connections
         </span>
         <div
-          className="flex items-center gap-3"
+          className="flex flex-wrap items-center gap-3"
           aria-label="Page status legend"
         >
-          {(["Completed", "Failed", "Other"] as const).map((status) => (
+          {statuses.map((status) => (
             <span key={status} className="flex items-center gap-1.5">
               <span
                 aria-hidden="true"
                 className={cn(
                   "size-2 rounded-full border",
-                  nodeColor(status === "Other" ? "Skipped" : status),
+                  statusStyles[status].dot,
                 )}
               />
               {status}
